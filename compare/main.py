@@ -64,7 +64,7 @@ def process_audio(file1, file2):
     return result_text, fig_buf, (sr1, matched)
 
 # Blocks를 사용해서 이미지와 Interface를 결합
-with gr.Blocks() as demo:
+with gr.Blocks(title="KBS 미디어연구소 - 단파방송 수신 오디오 품질 평가") as demo:
     gr.Image("KBSMRI_crop.jpg", show_label=False, show_download_button=False, container=False)
     gr.Interface(
         fn=process_audio,
