@@ -1,7 +1,7 @@
 import numpy as np
 import soundfile as sf
 import gradio as gr
-from scipy.signal import correlate, spectrogram
+from scipy.signal import correlate#, spectrogram
 import matplotlib.pyplot as plt
 import io
 from PIL import Image
@@ -24,15 +24,16 @@ def calculate_snr(clean, test):
     snr = 10 * np.log10(signal_power / noise_power) if noise_power > 0 else np.inf
     return snr, noise
 
+# 참고: plt는 한글 사용 시 폰트 문제 발생
 def plot_signals(clean, matched, noise, sr):
     fig, axs = plt.subplots(3, 1, figsize=(10, 6), sharex=True)
     t = np.arange(len(clean)) / sr
     axs[0].plot(t, clean)
-    axs[0].set_title("1번: 테스트 오디오 (Clean Signal)")
+    axs[0].set_title('Test Audio (Received Signal)')
     axs[1].plot(t, matched)
-    axs[1].set_title("2번: 매칭된 구간 (Matched Segment)")
+    axs[1].set_title('Matched Segment from the Original Audio')
     axs[2].plot(t, noise)
-    axs[2].set_title("잡음 (Matched - Clean)")
+    axs[2].set_title('Noise (Test - Matched)')
 
     axs[2].set_xlabel("Time [s]")
     fig.tight_layout()
@@ -67,16 +68,16 @@ with gr.Blocks() as demo:
     gr.Interface(
         fn=process_audio,
         inputs=[
-            gr.Audio(type="filepath", label="1번: 테스트 오디오 (짧은 신호)"),
-            gr.Audio(type="filepath", label="2번: 녹음 오디오 (긴 파일)")
+            gr.Audio(type="filepath", label="1번: 테스트 오디오 (수신 신호, 짧음)"),
+            gr.Audio(type="filepath", label="2번: 원본 오디오 (송신 신호, 긺)")
         ],
         outputs=[
             gr.Text(label="결과 (SNR 및 위치)"),
             gr.Image(label="신호 비교 시각화"),
-            gr.Audio(label="🔊 매칭된 오디오 구간 (듣기)")
+            gr.Audio(label="🔊 매칭된 원 오디오 구간 (듣기)")
         ],
-        description="테스트 오디오를 긴 오디오에서 찾아 SNR 계산 및 시각화합니다. WAV 또는 FLAC 권장."
+        description="짧은 테스트(수신) 신호를 긴 원본(송신) 신호에서 찾아 매칭하고 SNR을 계산합니다. WAV 또는 FLAC 권장하며 샘플링주파수는 동일해야 합니다."
     )
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=False)
+    demo.launch(server_name="0.0.0.0", server_port=7275, share=False)
