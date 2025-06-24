@@ -59,7 +59,8 @@ def process_audio(file1, file2):
     snr, noise = calculate_snr(short, matched)
     fig_buf = plot_signals(short, matched, noise, sr1)
 
-    result_text = f"🎯 매칭 위치: {offset / sr1:.2f}초\n📊 SNR: {snr:.2f} dB"
+    result_text = f"🎯 매칭 위치: {offset / sr1:.2f}초\n\n## 📊 **SNR: {snr:.2f} dB**"
+    gr.Info(f'신호대잡음비(SNR)는 {snr:.2f} dB 입니다.', duration=10)
     return result_text, fig_buf, (sr1, matched)
 
 # Blocks를 사용해서 이미지와 Interface를 결합
@@ -76,7 +77,13 @@ with gr.Blocks() as demo:
             gr.Image(label="신호 비교 시각화"),
             gr.Audio(label="🔊 매칭된 원 오디오 구간 (듣기)")
         ],
-        description="짧은 테스트(수신) 신호를 긴 원본(송신) 신호에서 찾아 매칭하고 SNR을 계산합니다. WAV 또는 FLAC 권장하며 샘플링주파수는 동일해야 합니다."
+        description=
+        '''국제방송 수신 품질 평가를 위한 테스트 페이지입니다.<br>
+        짧은 테스트(수신) 신호를 긴 원본(송신) 신호에서 찾아 매칭하고 SNR을 계산합니다.<br>
+        오디오 신호는 WAV 또는 FLAC 권장하며 샘플링주파수는 동일해야 합니다.<br><br>
+        담당자:<br>
+        곽천섭 수석 hosu10@gmail.com<br>
+        오주현 팀장 jhoh@kbs.co.kr'''
     )
 
 if __name__ == "__main__":
